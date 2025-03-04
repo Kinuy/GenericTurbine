@@ -1,0 +1,19 @@
+# Visual Studio Studio
+/.vs
+**.sln
+**.vcxproj
+**.vcxproj.user
+**.vcxproj.filters
+
+# Conan
+/dependencies
+
+
+# Build output
+/build
+
+/libs
+
+/temp
+
+premake5.exe
