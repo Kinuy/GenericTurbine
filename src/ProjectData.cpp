@@ -93,7 +93,7 @@ void ProjectData::processProjectData()
 		}
 		if (findKeyAndReturnValue("NUMBER_OF_BLADES", line, tempLine))
 		{
-			_numberOfBlades = line2SingleValue<double>(tempLine);
+			_numberOfBlades = line2SingleValue<int>(tempLine);
 		}
 		if (findKeyAndReturnValue("RATED_ROTOR_SPEED", line, tempLine))
 		{
@@ -130,37 +130,5 @@ void ProjectData::processProjectData()
 	}
 }
 
-bool ProjectData::findKeyAndReturnValue(std::string key, const std::string& inputLine, std::string& tempLine)
-{
-	bool validLine = false;
 
-	if (inputLine.find(key.append(" ")) == 0)
-	{
-		tempLine.assign(inputLine);
-		tempLine = tempLine.erase(0, key.size());
-
-		if (tempLine != "")
-		{
-			validLine = true;
-		}
-	}
-	return validLine;
-}
-
-void ProjectData::stripCommentsFromLine(std::string& line)
-{
-	size_t startPosition = line.find_first_not_of(" \t");
-	size_t find = line.find("#");
-	if (find < 10000)
-	{
-		line.erase(find, std::string::npos);
-		return;
-	}
-
-	if (std::string::npos != startPosition)
-	{
-		line = line.substr(startPosition);
-	}
-
-}
 

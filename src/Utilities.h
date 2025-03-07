@@ -60,3 +60,37 @@ static void dirHandler(const std::string& folder) {
 		std::cerr << "Error handling directory " << folder << ": " << e.what() << std::endl;
 	}
 }
+
+static bool findKeyAndReturnValue(std::string key, const std::string& inputLine, std::string& tempLine)
+{
+	bool validLine = false;
+
+	if (inputLine.find(key.append(" ")) == 0)
+	{
+		tempLine.assign(inputLine);
+		tempLine = tempLine.erase(0, key.size());
+
+		if (tempLine != "")
+		{
+			validLine = true;
+		}
+	}
+	return validLine;
+}
+
+static void stripCommentsFromLine(std::string& line)
+{
+	size_t startPosition = line.find_first_not_of(" \t");
+	size_t find = line.find("#");
+	if (find < 10000)
+	{
+		line.erase(find, std::string::npos);
+		return;
+	}
+
+	if (std::string::npos != startPosition)
+	{
+		line = line.substr(startPosition);
+	}
+
+}

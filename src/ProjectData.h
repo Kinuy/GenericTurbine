@@ -14,19 +14,23 @@ public:
 
 	void readProjectData();
 	void processProjectData();
-	void stripCommentsFromLine(std::string&);
-	bool findKeyAndReturnValue(std::string key, const std::string& inputLine, std::string& tempLine);
+	//void stripCommentsFromLine(std::string&);
+	//bool findKeyAndReturnValue(std::string key, const std::string& inputLine, std::string& tempLine);
+
+	std::string pathToAirfoilGeoDataFile() const { return _pathToAirfoilGeoDataFile; }
+	std::string pathToAirfoilPerfoDataFile() const { return _pathToAirfoilPerfoDataFile; }
+	std::string pathToBladeGeoDataFile() const { return _pathToBladeGeoDataFile; }
 
 private:
 
 	std::string _projectFile;
-	std::string _pathToAirfoilGeoDataFile;
-	std::string _pathToAirfoilPerfoDataFile;
-	std::string _pathToBladeGeoDataFile;
-
 	std::string _projectRevision;
 	std::string _projectName;
 	std::string _projectNumber;
+
+	std::string _pathToAirfoilGeoDataFile;
+	std::string _pathToAirfoilPerfoDataFile;
+	std::string _pathToBladeGeoDataFile;
 
 	double _bladeLength;
 	double _airDensity;
@@ -45,4 +49,5 @@ private:
 	std::vector<double> _analyseBladeSections;
 	std::vector<double> _addonVGBladeSections;
 	std::vector<std::string> projectData;
+
 };
