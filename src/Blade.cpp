@@ -69,6 +69,7 @@ void Blade::processAirfoilsGeoPerfoData() {
 		_sptrAirfoilPerfoDataList.push_back(ptrAirfoilPerfoData);
 	}
 
+	filterAirfoilsGeoDataList();
 }
 
 void Blade::filterAirfoilsGeoDataList() {
@@ -95,6 +96,7 @@ void Blade::createAirfoils() {
 					_airfoilsData.push_back(ptrAirfoilData);
 				}
 			}
+			continue;
 		}
 	}
 }
