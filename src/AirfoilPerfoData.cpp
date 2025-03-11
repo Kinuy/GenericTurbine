@@ -7,6 +7,10 @@ AirfoilPerfoData::AirfoilPerfoData(std::string polarFile){
 	_relThickness = 0.0;
 	_reynoldsNumber = 0.0;
 	_machNumber = 0.0;
+	_xa = 25;
+	_nalpha = 0;
+	_nvals = 3;
+	_depang = 0;
 
 	readAirfoilPerfoData();
 }
@@ -16,6 +20,10 @@ AirfoilPerfoData::AirfoilPerfoData() {
 	_relThickness = 0.0;
 	_reynoldsNumber = 0.0;
 	_machNumber = 0.0;
+	_xa = 25;
+	_nalpha = 0;
+	_nvals = 3;
+	_depang = 0;
 }
 
 AirfoilPerfoData::~AirfoilPerfoData(){}
@@ -49,11 +57,18 @@ void AirfoilPerfoData::readAirfoilPerfoData()
 			_xa = val;
 			continue;
 		}
-		if (line.starts_with("THICK"))
+		if (line.starts_with("RELTHICK"))
 		{
 			double val;
 			token >> key >> val;
 			_relThickness = val;
+			continue;
+		}
+		if (line.starts_with("NAME"))
+		{
+			double val;
+			token >> key >> val;
+			_airfoilPolarName = val;
 			continue;
 		}
 		if (line.starts_with("REYN"))
@@ -97,6 +112,7 @@ void AirfoilPerfoData::readAirfoilPerfoData()
 			_cm.push_back(cm);
 		}
 	}
+	_nalpha = _alpha.size();
 	file.close();
 }
 
