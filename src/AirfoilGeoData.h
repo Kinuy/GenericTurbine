@@ -18,7 +18,7 @@ public:
 	double setHasPerfoData(double hasPerfoData) { return _hasPerfoData = hasPerfoData; };
 	double getHasPerfoData() { return _hasPerfoData; };
 
-private:
+protected:
 
 	std::string _airfoilGeoDataFile;
 	std::string _airfoilName;
