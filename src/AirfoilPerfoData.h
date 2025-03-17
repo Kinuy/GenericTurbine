@@ -28,7 +28,7 @@ public:
 private:
 
 	int _xa;
-	int _nalpha;
+	size_t _nalpha;
 	int _nvals;
 	int _depang;
 	std::string _airfoilPerfoDataFile;

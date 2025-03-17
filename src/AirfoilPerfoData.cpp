@@ -66,7 +66,7 @@ void AirfoilPerfoData::readAirfoilPerfoData()
 		}
 		if (line.starts_with("NAME"))
 		{
-			double val;
+			std::string val;
 			token >> key >> val;
 			_airfoilPolarName = val;
 			continue;
@@ -122,13 +122,20 @@ void AirfoilPerfoData::processAirfoilPerfoData()
 
 std::vector<double> AirfoilPerfoData::getCoefficients(std::string coefficient) const
 {
-	if (coefficient == "cl") {
-		return _cl;
+	try
+	{
+		if (coefficient == "cl") {
+			return _cl;
+		}
+		if (coefficient == "cd") {
+			return _cd;
+		}
+		if (coefficient == "cm") {
+			return _cm;
+		}
 	}
-	if (coefficient == "cd") {
-		return _cd;
-	}
-	if (coefficient == "cm") {
-		return _cm;
+	catch (const std::exception&)
+	{
+		std::cout << "Error, bad key!";
 	}
 }

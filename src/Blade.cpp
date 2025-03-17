@@ -120,24 +120,26 @@ double Blade::getCoefficient(double alpha, double relThickness, std::string coef
 			_airfoilsDataDesign.at(0)->getAirfoilPerfoData()->getCoefficients(coefficient),
 			alpha);
 	}
+	else {
+		// second interpolate linear in between thin and thick airfoil data
+		int index = 0;
+		while (relThickness > _airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getRelThickness()) {
+			index++;
+			double coefficientThin, coefficientThick;
+			coefficientThin = interpolateLinear(
+				_airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getAlpha(),
+				_airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getCoefficients(coefficient),
+				alpha);
+			coefficientThick = interpolateLinear(
+				_airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getAlpha(),
+				_airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getCoefficients(coefficient),
+				alpha);
 
-	// second interpolate linear in between thin and thick airfoil data
-	int index = 0;
-	while (relThickness > _airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getRelThickness()) {
-		index++;
-		double coefficientThin, coefficientThick;
-		coefficientThin = interpolateLinear(
-			_airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getAlpha(),
-			_airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getCoefficients(coefficient),
-			alpha);
-		coefficientThick = interpolateLinear(
-			_airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getAlpha(),
-			_airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getCoefficients(coefficient),
-			alpha);
+			double relThicknessThin = _airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getRelThickness();
+			double relThicknessThick = _airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getRelThickness();
 
-		double relThicknessThin = _airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getRelThickness();
-		double relThicknessThick = _airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getRelThickness();
-
-		return coefficientThin + (relThickness - relThicknessThin) * (coefficientThick - coefficientThin) / (relThicknessThick);
+			return coefficientThin + (relThickness - relThicknessThin) * (coefficientThick - coefficientThin) / (relThicknessThick);
+		}
 	}
+	return 0;
 }
