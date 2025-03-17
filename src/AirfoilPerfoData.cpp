@@ -119,3 +119,16 @@ void AirfoilPerfoData::readAirfoilPerfoData()
 void AirfoilPerfoData::processAirfoilPerfoData()
 {
 }
+
+std::vector<double> AirfoilPerfoData::getCoefficients(std::string coefficient) const
+{
+	if (coefficient == "cl") {
+		return _cl;
+	}
+	if (coefficient == "cd") {
+		return _cd;
+	}
+	if (coefficient == "cm") {
+		return _cm;
+	}
+}

@@ -94,3 +94,23 @@ static void stripCommentsFromLine(std::string& line)
 	}
 
 }
+
+static double interpolateLinear(std::vector<double> x, std::vector<double> y, double xTarget)
+{
+	if (y.size() != x.size()){
+		std::cout << "Error: x and y vectors have not the same length" << std::endl;
+	}
+
+	if (xTarget < x.at(0)) {
+		return y.at(0);
+	}
+	if (xTarget > x.back()) {
+		return y.back();
+	}
+	for (int i = 0; i < x.size() - 1; i++) {
+		if ((x.at(i) <= xTarget) && x.at(i + 1) >= xTarget) {
+			break;
+		}
+		return y.at(i) + (xTarget - x.at(i)) * (y.at(i + 1) - y.at(i)) / (x.at(i + 1) - x.at(i));
+	}
+}

@@ -16,6 +16,14 @@ public:
 	void processAirfoilPerfoData();
 
 	double getRelThickness()const { return _relThickness; };
+	double getReynoldsNumber()const { return _reynoldsNumber; };
+	double getMachNumber()const { return _machNumber; };
+	std::vector<double> getAlpha() const {return _alpha; };
+	std::vector<double> getCl() const { return _cl; };
+	std::vector<double> getCd() const { return _cd; };
+	std::vector<double> getCm() const { return _cm; };
+
+	std::vector<double> getCoefficients(std::string coefficient) const;
 
 private:
 

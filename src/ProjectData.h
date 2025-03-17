@@ -14,8 +14,6 @@ public:
 
 	void readProjectData();
 	void processProjectData();
-	//void stripCommentsFromLine(std::string&);
-	//bool findKeyAndReturnValue(std::string key, const std::string& inputLine, std::string& tempLine);
 
 	std::string pathToAirfoilGeoDataFile() const { return _pathToAirfoilGeoDataFile; }
 	std::string pathToAirfoilPerfoDataFile() const { return _pathToAirfoilPerfoDataFile; }

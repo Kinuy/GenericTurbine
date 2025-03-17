@@ -10,9 +10,6 @@ Blade::Blade(std::shared_ptr<ProjectData> projectData): _projectData(projectData
 {
 	_bladeGeoData = std::make_shared<BladeGeoData>(
 		_projectData->pathToBladeGeoDataFile());
-	//_airfoilsData = std::make_shared<std::vector<AirfoilData>>(
-	//	_projectData->pathToAirfoilGeoDataFile(),
-	//	_projectData->pathToAirfoilPerfoDataFile());
 
 	readAirfoilsGeoDataList();
 	readAirfoilsPerfoDataList();
@@ -87,16 +84,60 @@ void Blade::createAirfoils() {
 		if (!_sptrAirfoilGeoDataList.at(i)->getHasPerfoData()) {
 			std::shared_ptr<AirfoilPerfoData> ptrAirfoilEmptyPerfoData = std::make_shared<AirfoilPerfoData>();
 			std::shared_ptr<AirfoilData> ptrAirfoilData = std::make_shared<AirfoilData>(_sptrAirfoilGeoDataList.at(i), ptrAirfoilEmptyPerfoData);
-			_airfoilsData.push_back(ptrAirfoilData);
+			_airfoilsDataDesign.push_back(ptrAirfoilData);
 		}
 		else {
 			for (int p = 0; p < _airfoilPolarFileList.size(); p++) {
 				if (_sptrAirfoilGeoDataList.at(i)->getRelThickness() == _sptrAirfoilPerfoDataList.at(p)->getRelThickness()) {
 					std::shared_ptr<AirfoilData> ptrAirfoilData = std::make_shared<AirfoilData>(_sptrAirfoilGeoDataList.at(i), _sptrAirfoilPerfoDataList.at(p));
-					_airfoilsData.push_back(ptrAirfoilData);
+					_airfoilsDataDesign.push_back(ptrAirfoilData);
 				}
 			}
 			continue;
 		}
+
+	}
+	// we need airfoils from thin to thickest shape for interpolation
+	std::reverse(_airfoilsDataDesign.begin(), _airfoilsDataDesign.end());
+	for (std::shared_ptr<AirfoilData> num : _airfoilsDataDesign) {
+		std::cout << num->getAirfoilPerfoData()->getRelThickness() << " ";
+	}
+}
+
+double Blade::getCoefficient(double alpha, double relThickness, std::string coefficient) {
+	// takes "cl" or "cd" or "cm" as input for coefficient
+	// first test edge cases. thickest or thinnest airfoil
+	if (relThickness >= _airfoilsDataDesign.at(-1)->getAirfoilPerfoData()->getRelThickness()) {
+		return interpolateLinear(
+			_airfoilsDataDesign.at(-1)->getAirfoilPerfoData()->getAlpha(),
+			_airfoilsDataDesign.at(-1)->getAirfoilPerfoData()->getCoefficients(coefficient),
+			alpha);
+	}
+	if (relThickness <= _airfoilsDataDesign.at(0)->getAirfoilPerfoData()->getRelThickness()) {
+
+		return interpolateLinear(
+			_airfoilsDataDesign.at(0)->getAirfoilPerfoData()->getAlpha(),
+			_airfoilsDataDesign.at(0)->getAirfoilPerfoData()->getCoefficients(coefficient),
+			alpha);
+	}
+
+	// second interpolate linear in between thin and thick airfoil data
+	int index = 0;
+	while (relThickness > _airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getRelThickness()) {
+		index++;
+		double coefficientThin, coefficientThick;
+		coefficientThin = interpolateLinear(
+			_airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getAlpha(),
+			_airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getCoefficients(coefficient),
+			alpha);
+		coefficientThick = interpolateLinear(
+			_airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getAlpha(),
+			_airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getCoefficients(coefficient),
+			alpha);
+
+		double relThicknessThin = _airfoilsDataDesign.at(index - 1)->getAirfoilPerfoData()->getRelThickness();
+		double relThicknessThick = _airfoilsDataDesign.at(index)->getAirfoilPerfoData()->getRelThickness();
+
+		return coefficientThin + (relThickness - relThicknessThin) * (coefficientThick - coefficientThin) / (relThicknessThick);
 	}
 }
